@@ -10,8 +10,9 @@ function getClickPos(e) {
 var joince = {
     cnv: null, ctx: null,
     w: window.innerWidth, h: window.innerHeight,
-    pos: { x: 0, y: 0 }, dim: { w: scale(25), h: scale(25) },
+    player: { x: 0, y: 0, w: scale(25), h: scale(25), color: 'red' },
     move: { left: false, up: false, right: false, down: false },
+    blocks: [{x: 100, y: 100, w: 40, h: 20, color: 'black'}],
     consts: { SPEED: scale(4), joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } },
     joystick: {
         create: function(pos) {
@@ -117,13 +118,30 @@ window.addEventListener('load', function() {
     setInterval(function() {
         joince.ctx.clearRect(0, 0, joince.w, joince.h);
 
-        joince.pos.x += (joince.move.left ? -joince.consts.SPEED : 0)
+        joince.player.x += (joince.move.left ? -joince.consts.SPEED : 0)
                       + (joince.move.right ? joince.consts.SPEED : 0);
-        joince.pos.y += (joince.move.up ? -joince.consts.SPEED : 0)
+        joince.player.y += (joince.move.up ? -joince.consts.SPEED : 0)
                       + (joince.move.down ? joince.consts.SPEED : 0);
 
         joince.joystick.update();
 
-        joince.ctx.fillRect(joince.pos.x, joince.pos.y, joince.dim.w, joince.dim.h);
+        draw(joince.player);
+
+        for (var i = 0; i < joince.blocks.length; ++i) {
+            var b = draw(joince.blocks[i]);
+            if (collide(joince.player, b)) {
+                joince.player.w = 0;
+            }
+        }
     }, 20);
 });
+
+function collide(a, b) {
+    return a.x + a.w > b.x && a.x < b.x + b.w && a.y + a.h > b.y && a.y < b.y + b.h;
+}
+
+function draw(x) {
+    joince.ctx.fillStyle = x.color;
+    joince.ctx.fillRect(x.x, x.y, x.w, x.h);
+    return x;
+}
