@@ -1,6 +1,10 @@
-// TODO put this some place better
+// TODO put these some place better
 function scale(x) {
     return ((window.innerWidth + window.innerHeight) / 2) * (x / 1000);
+}
+function getClickPos(e) {
+    e = e.touches ? e.touches[0] : e;
+    return { x: e.clientX, y: e.clientY };
 }
 
 var joince = {
@@ -38,9 +42,13 @@ window.addEventListener('load', function() {
     var moveListener;
     var mouseListen = function(pressed, mouse) {
         return pressed ? function(e) {
-            joince.joystick.create({x: e.clientX, y: e.clientY});
+            e.preventDefault();
+
+            joince.joystick.create(getClickPos(e));
             window.addEventListener(mouse ? 'mousemove' : 'touchmove', moveListener = function(e) {
-                joince.joystick.nub = {x: e.clientX, y: e.clientY};
+                e.preventDefault();
+
+                joince.joystick.nub = getClickPos(e);
 
                 var dx = joince.joystick.pos.x - joince.joystick.nub.x,
                     dy = joince.joystick.pos.y - joince.joystick.nub.y;
