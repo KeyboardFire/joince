@@ -1,15 +1,21 @@
+// TODO put this some place better
+function scale(x) {
+    return ((window.innerWidth + window.innerHeight) / 2) * (x / 1000);
+}
+
 var joince = {
     cnv: null, ctx: null,
-    pos: { x: 0, y: 0 },
+    w: window.innerWidth, h: window.innerHeight,
+    pos: { x: 0, y: 0 }, dim: { w: scale(25), h: scale(25) },
     move: { left: false, up: false, right: false, down: false },
-    consts: { SPEED: 3, joystick: { NUB_RADIUS: 5, OUTER_RADIUS: 15 } },
+    consts: { SPEED: scale(4), joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } },
     joystick: { create: joystickCreate, destroy: joystickDestroy, nub: null, pos: null }
 }
 
 window.addEventListener('load', function() {
     joince.cnv = document.getElementById('cnv');
-    joince.cnv.width = window.innerWidth;
-    joince.cnv.height = window.innerHeight;
+    joince.cnv.width = joince.w;
+    joince.cnv.height = joince.h;
     joince.cnv.style.position = 'absolute';
     joince.cnv.style.top = '0px';
     joince.cnv.style.left = '0px';
@@ -59,7 +65,7 @@ window.addEventListener('load', function() {
     window.addEventListener('touchend', mouseListen(false, false));
 
     setInterval(function() {
-        joince.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        joince.ctx.clearRect(0, 0, joince.w, joince.h);
 
         joince.pos.x += (joince.move.left ? -joince.consts.SPEED : 0)
                       + (joince.move.right ? joince.consts.SPEED : 0);
@@ -84,16 +90,16 @@ window.addEventListener('load', function() {
             var dx = joince.joystick.pos.x - joince.joystick.nub.x,
                 dy = joince.joystick.pos.y - joince.joystick.nub.y;
 
-            if (Math.abs(dx) < 5) {}
+            if (Math.abs(dx) < joince.consts.joystick.OUTER_RADIUS / 2) {}
             else if (dx < 0) joince.pos.x += joince.consts.SPEED;
             else if (dx > 0) joince.pos.x -= joince.consts.SPEED;
 
-            if (Math.abs(dy) < 5) {}
+            if (Math.abs(dy) < joince.consts.joystick.OUTER_RADIUS / 2) {}
             else if (dy < 0) joince.pos.y += joince.consts.SPEED;
             else if (dy > 0) joince.pos.y -= joince.consts.SPEED;
         }
 
-        joince.ctx.fillRect(joince.pos.x, joince.pos.y, 10, 10);
+        joince.ctx.fillRect(joince.pos.x, joince.pos.y, joince.dim.w, joince.dim.h);
     }, 20);
 });
 
