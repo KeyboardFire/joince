@@ -68,6 +68,17 @@ window.addEventListener('load', function() {
                            joince.consts.joystick.OUTER_RADIUS,
                            0, Math.PI*2);
             joince.ctx.stroke();
+
+            var dx = joince.joystick.pos.x - joince.joystick.nub.x,
+                dy = joince.joystick.pos.y - joince.joystick.nub.y;
+
+            if (Math.abs(dx) < 5) {}
+            else if (dx < 0) joince.pos.x += joince.consts.SPEED;
+            else if (dx > 0) joince.pos.x -= joince.consts.SPEED;
+
+            if (Math.abs(dy) < 5) {}
+            else if (dy < 0) joince.pos.y += joince.consts.SPEED;
+            else if (dy > 0) joince.pos.y -= joince.consts.SPEED;
         }
 
         joince.ctx.fillRect(joince.pos.x, joince.pos.y, 10, 10);
