@@ -21,11 +21,11 @@ var joince = {
             joince.joystick.nub = joince.joystick.pos = null;
             joince.move.left = joince.move.right = joince.move.up = joince.move.down = false;
         }, update: function(pos) {
+            var dx = joince.joystick.pos.x - joince.joystick.nub.x,
+                dy = joince.joystick.pos.y - joince.joystick.nub.y;
+
             if (pos) {
                 joince.joystick.nub = pos;
-
-                var dx = joince.joystick.pos.x - joince.joystick.nub.x,
-                    dy = joince.joystick.pos.y - joince.joystick.nub.y;
 
                 if (Math.sqrt(dx*dx + dy*dy) > joince.consts.joystick.OUTER_RADIUS) {
                     var angle = Math.atan2(-dx, -dy);
@@ -37,6 +37,8 @@ var joince = {
                 }
             } else {
                 if (joince.joystick.nub) {
+                    joince.ctx.fillStyle = joince.ctx.strokeStyle = 'black';
+
                     joince.ctx.beginPath();
                     joince.ctx.arc(joince.joystick.nub.x,
                                    joince.joystick.nub.y,
@@ -50,9 +52,6 @@ var joince = {
                                    joince.consts.joystick.OUTER_RADIUS,
                                    0, Math.PI*2);
                     joince.ctx.stroke();
-
-                    var dx = joince.joystick.pos.x - joince.joystick.nub.x,
-                        dy = joince.joystick.pos.y - joince.joystick.nub.y;
 
                     if (Math.abs(dx) >= joince.consts.joystick.OUTER_RADIUS / 2) {
                         joince.move.left = dx > 0;
@@ -71,7 +70,7 @@ var joince = {
             }
         }, nub: null, pos: null
     }
-}
+};
 
 window.addEventListener('load', function() {
     joince.cnv = document.getElementById('cnv');
@@ -118,10 +117,10 @@ window.addEventListener('load', function() {
     setInterval(function() {
         joince.ctx.clearRect(0, 0, joince.w, joince.h);
 
-        joince.player.x += (joince.move.left ? -joince.consts.SPEED : 0)
-                      + (joince.move.right ? joince.consts.SPEED : 0);
-        joince.player.y += (joince.move.up ? -joince.consts.SPEED : 0)
-                      + (joince.move.down ? joince.consts.SPEED : 0);
+        joince.player.x += (joince.move.left ? -joince.consts.SPEED : 0) +
+                           (joince.move.right ? joince.consts.SPEED : 0);
+        joince.player.y += (joince.move.up ? -joince.consts.SPEED : 0) +
+                           (joince.move.down ? joince.consts.SPEED : 0);
 
         joince.joystick.update();
 
