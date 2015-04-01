@@ -2,7 +2,7 @@ var joince = {
     cnv: null, ctx: null,
     pos: { x: 0, y: 0 },
     move: { left: false, up: false, right: false, down: false },
-    consts: { SPEED: 3 },
+    consts: { SPEED: 3, joystick: { NUB_RADIUS: 5, OUTER_RADIUS: 15 } },
     joystick: { create: joystickCreate, destroy: joystickDestroy, nub: null, pos: null }
 }
 
@@ -56,10 +56,17 @@ window.addEventListener('load', function() {
 
         if (joince.joystick.nub) {
             joince.ctx.beginPath();
-            joince.ctx.arc(joince.joystick.nub.x, joince.joystick.nub.y, 5, 0, Math.PI*2);
+            joince.ctx.arc(joince.joystick.nub.x,
+                           joince.joystick.nub.y,
+                           joince.consts.joystick.NUB_RADIUS,
+                           0, Math.PI*2);
             joince.ctx.fill();
+
             joince.ctx.beginPath();
-            joince.ctx.arc(joince.joystick.pos.x, joince.joystick.pos.y, 15, 0, Math.PI*2);
+            joince.ctx.arc(joince.joystick.pos.x,
+                           joince.joystick.pos.y,
+                           joince.consts.joystick.OUTER_RADIUS,
+                           0, Math.PI*2);
             joince.ctx.stroke();
         }
 
@@ -67,10 +74,5 @@ window.addEventListener('load', function() {
     }, 20);
 });
 
-function joystickCreate(pos) {
-    joince.joystick.nub = joince.joystick.pos = pos;
-}
-
-function joystickDestroy() {
-    joince.joystick.nub = joince.joystick.pos = null;
-}
+function joystickCreate(pos) { joince.joystick.nub = joince.joystick.pos = pos; }
+function joystickDestroy() { joince.joystick.nub = joince.joystick.pos = null; }
