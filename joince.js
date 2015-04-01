@@ -12,7 +12,7 @@ var joince = {
     w: window.innerWidth, h: window.innerHeight,
     player: { x: 0, y: 0, w: scale(25), h: scale(25), color: 'red' },
     move: { left: false, up: false, right: false, down: false },
-    blocks: [{x: 100, y: 100, w: 40, h: 20, color: 'black'}],
+    blocks: [],
     consts: { SPEED: scale(4), joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } },
     joystick: {
         create: function(pos) {
@@ -21,11 +21,12 @@ var joince = {
             joince.joystick.nub = joince.joystick.pos = null;
             joince.move.left = joince.move.right = joince.move.up = joince.move.down = false;
         }, update: function(pos) {
-            var dx = joince.joystick.pos.x - joince.joystick.nub.x,
-                dy = joince.joystick.pos.y - joince.joystick.nub.y;
-
+            var dx, dy; // because jshint is idiotic
             if (pos) {
                 joince.joystick.nub = pos;
+
+                var dx = joince.joystick.pos.x - joince.joystick.nub.x,
+                    dy = joince.joystick.pos.y - joince.joystick.nub.y;
 
                 if (Math.sqrt(dx*dx + dy*dy) > joince.consts.joystick.OUTER_RADIUS) {
                     var angle = Math.atan2(-dx, -dy);
@@ -52,6 +53,10 @@ var joince = {
                                    joince.consts.joystick.OUTER_RADIUS,
                                    0, Math.PI*2);
                     joince.ctx.stroke();
+
+                    var dx = joince.joystick.pos.x - joince.joystick.nub.x,
+                        dy = joince.joystick.pos.y - joince.joystick.nub.y;
+
 
                     if (Math.abs(dx) >= joince.consts.joystick.OUTER_RADIUS / 2) {
                         joince.move.left = dx > 0;
@@ -80,6 +85,13 @@ window.addEventListener('load', function() {
     joince.cnv.style.top = '0px';
     joince.cnv.style.left = '0px';
     joince.ctx = joince.cnv.getContext('2d');
+
+    for (var i = 0; i < 10; ++i) {
+        var r = function(x) { return Math.random() * x | 0; };
+        var b = { w: r(scale(50)), h: r(scale(50)), color: 'rgb(' + [r(255),r(255),r(255)] + ')' };
+        b.x = r(joince.w - b.w); b.y = r(joince.h - b.h);
+        joince.blocks.push(b);
+    }
 
     var keyListen = function(pressed) {
         return function(e) {
