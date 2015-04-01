@@ -35,6 +35,18 @@ window.addEventListener('load', function() {
             joince.joystick.create({x: e.clientX, y: e.clientY});
             window.addEventListener(mouse ? 'mousemove' : 'touchmove', moveListener = function(e) {
                 joince.joystick.nub = {x: e.clientX, y: e.clientY};
+
+                var dx = joince.joystick.pos.x - joince.joystick.nub.x,
+                    dy = joince.joystick.pos.y - joince.joystick.nub.y;
+
+                if (Math.sqrt(dx*dx + dy*dy) > joince.consts.joystick.OUTER_RADIUS) {
+                    var angle = Math.atan2(-dx, -dy);
+
+                    joince.joystick.nub = {
+                        x: joince.joystick.pos.x + Math.sin(angle) * joince.consts.joystick.OUTER_RADIUS,
+                        y: joince.joystick.pos.y + Math.cos(angle) * joince.consts.joystick.OUTER_RADIUS
+                    };
+                }
             });
         } : function(e) {
             joince.joystick.destroy();
