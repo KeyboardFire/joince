@@ -110,6 +110,26 @@ var joince = {
             window.addEventListener('mouseup', mouseListen(false, true));
             window.addEventListener('touchend', mouseListen(false, false));
         }, nub: null, pos: null
+    },
+    sprite: {
+        collide: function(a, b) {
+            return a.x + a.w > b.x && a.x < b.x + b.w && a.y + a.h > b.y && a.y < b.y + b.h;
+        }, keepInBounds: function(x) {
+            if (x.x < 0) x.x = 0;
+            if (x.y < 0) x.y = 0;
+            if (x.x + x.w > joince.w) x.x = joince.w - x.w;
+            if (x.y + x.h > joince.h) x.y = joince.h - x.h;
+        }, draw: function(x) {
+            joince.ctx.fillStyle = x.color;
+
+            joince.ctx.translate(x.x + x.w/2, x.y + x.h/2);
+            joince.ctx.rotate(x.r);
+            joince.ctx.fillRect(-x.w/2, -x.h/2, x.w, x.h);
+            joince.ctx.rotate(-x.r);
+            joince.ctx.translate(-x.x - x.w/2, -x.y - x.h/2);
+
+            return x;
+        }
     }
 };
 
@@ -142,33 +162,13 @@ window.addEventListener('load', function() {
         joince.joystick.update();
 
         for (var i = 0; i < joince.blocks.length; ++i) {
-            var b = draw(joince.blocks[i]);
-            if (collide(joince.player, b)) {
+            var b = joince.sprite.draw(joince.blocks[i]);
+            if (joince.sprite.collide(joince.player, b)) {
                 joince.player.w = 0;
             }
         }
 
-        if (joince.player.x < 0) joince.player.x = 0;
-        if (joince.player.y < 0) joince.player.y = 0;
-        if (joince.player.x + joince.player.w > joince.w) joince.player.x = joince.w - joince.player.w;
-        if (joince.player.y + joince.player.h > joince.h) joince.player.y = joince.h - joince.player.h;
-
-        draw(joince.player);
+        joince.sprite.keepInBounds(joince.player);
+        joince.sprite.draw(joince.player);
     }, 20);
 });
-
-function collide(a, b) {
-    return a.x + a.w > b.x && a.x < b.x + b.w && a.y + a.h > b.y && a.y < b.y + b.h;
-}
-
-function draw(x) {
-    joince.ctx.fillStyle = x.color;
-
-    joince.ctx.translate(x.x + x.w/2, x.y + x.h/2);
-    joince.ctx.rotate(x.r);
-    joince.ctx.fillRect(-x.w/2, -x.h/2, x.w, x.h);
-    joince.ctx.rotate(-x.r);
-    joince.ctx.translate(-x.x - x.w/2, -x.y - x.h/2);
-
-    return x;
-}
