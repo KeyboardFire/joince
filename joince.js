@@ -88,7 +88,7 @@ window.addEventListener('load', function() {
 
     for (var i = 0; i < 10; ++i) {
         var r = function(x) { return Math.random() * x | 0; };
-        var b = { w: r(scale(50)), h: r(scale(50)), color: 'rgb(' + [r(255),r(255),r(255)] + ')' };
+        var b = { w: r(scale(50)+5), h: r(scale(50)+5), color: 'rgb(' + [r(255),r(255),r(255)] + ')' };
         b.x = r(joince.w - b.w); b.y = r(joince.h - b.h);
         joince.blocks.push(b);
     }
@@ -136,14 +136,19 @@ window.addEventListener('load', function() {
 
         joince.joystick.update();
 
-        draw(joince.player);
-
         for (var i = 0; i < joince.blocks.length; ++i) {
             var b = draw(joince.blocks[i]);
             if (collide(joince.player, b)) {
                 joince.player.w = 0;
             }
         }
+
+        if (joince.player.x < 0) joince.player.x = 0;
+        if (joince.player.y < 0) joince.player.y = 0;
+        if (joince.player.x + joince.player.w > joince.w) joince.player.x = joince.w - joince.player.w;
+        if (joince.player.y + joince.player.h > joince.h) joince.player.y = joince.h - joince.player.h;
+
+        draw(joince.player);
     }, 20);
 });
 
