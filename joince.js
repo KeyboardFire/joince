@@ -11,19 +11,45 @@ var joince = {
     cnv: null, ctx: null,
     w: window.innerWidth, h: window.innerHeight,
     player: { x: 0, y: 0, w: scale(25), h: scale(25), r: 0, color: 'red' },
-    move: { left: false, up: false, right: false, down: false },
     blocks: [],
     consts: { SPEED: scale(4), joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } },
+    arrowkeys: {
+        pressed: { left: false, up: false, right: false, down: false },
+        update: function(e, pressed) {
+            if (e) {
+                e.preventDefault();
+                switch (e.keyCode) {
+                case 37: joince.arrowkeys.pressed.left = pressed; break;
+                case 38: joince.arrowkeys.pressed.up = pressed; break;
+                case 39: joince.arrowkeys.pressed.right = pressed; break;
+                case 40: joince.arrowkeys.pressed.down = pressed; break;
+                }
+            } else {
+                joince.player.r += (joince.arrowkeys.pressed.left ? -0.2 : 0) +
+                                   (joince.arrowkeys.pressed.right ? 0.2 : 0);
+                var mult = joince.arrowkeys.pressed.up ? 1 : joince.arrowkeys.pressed.down ? -1 : 0;
+                joince.player.x += Math.cos(joince.player.r) * joince.consts.SPEED * mult;
+                joince.player.y += Math.sin(joince.player.r) * joince.consts.SPEED * mult;
+            }
+        }, addListeners: function() {
+            var keyListen = function(pressed) {
+                return function(e) { joince.arrowkeys.update(e, pressed); };
+            };
+            window.addEventListener('keydown', keyListen(true));
+            window.addEventListener('keyup', keyListen(false));
+        }
+    },
     joystick: {
-        create: function(pos) {
-            joince.joystick.nub = joince.joystick.pos = pos;
+        create: function(e) {
+            e.preventDefault();
+            joince.joystick.nub = joince.joystick.pos = getClickPos(e);
         }, destroy: function() {
             joince.joystick.nub = joince.joystick.pos = null;
-            joince.move.left = joince.move.right = joince.move.up = joince.move.down = false;
-        }, update: function(pos) {
+        }, update: function(e) {
             var dx, dy; // because jshint is idiotic
-            if (pos) {
-                joince.joystick.nub = pos;
+            if (e) {
+                e.preventDefault();
+                joince.joystick.nub = getClickPos(e);
 
                 var dx = joince.joystick.pos.x - joince.joystick.nub.x,
                     dy = joince.joystick.pos.y - joince.joystick.nub.y;
@@ -66,6 +92,23 @@ var joince = {
                     }
                 }
             }
+        }, addListeners: function() {
+            var moveListener;
+            var mouseListen = function(pressed, mouse) {
+                return pressed ? function(e) {
+                    joince.joystick.create(e);
+                    window.addEventListener(mouse ? 'mousemove' : 'touchmove', moveListener = function(e) {
+                        joince.joystick.update(e);
+                    });
+                } : function(e) {
+                    joince.joystick.destroy();
+                    window.removeEventListener(mouse ? 'mousemove' : 'touchmove', moveListener);
+                };
+            };
+            window.addEventListener('mousedown', mouseListen(true, true));
+            window.addEventListener('touchstart', mouseListen(true, false));
+            window.addEventListener('mouseup', mouseListen(false, true));
+            window.addEventListener('touchend', mouseListen(false, false));
         }, nub: null, pos: null
     }
 };
@@ -89,47 +132,13 @@ window.addEventListener('load', function() {
         joince.blocks.push(b);
     }
 
-    var keyListen = function(pressed) {
-        return function(e) {
-            e.preventDefault();
-            switch (e.keyCode) {
-            case 37: joince.move.left = pressed; break;
-            case 38: joince.move.up = pressed; break;
-            case 39: joince.move.right = pressed; break;
-            case 40: joince.move.down = pressed; break;
-            }
-        };
-    };
-    window.addEventListener('keydown', keyListen(true));
-    window.addEventListener('keyup', keyListen(false));
-
-    var moveListener;
-    var mouseListen = function(pressed, mouse) {
-        return pressed ? function(e) {
-            e.preventDefault();
-            joince.joystick.create(getClickPos(e));
-            window.addEventListener(mouse ? 'mousemove' : 'touchmove', moveListener = function(e) {
-                e.preventDefault();
-                joince.joystick.update(getClickPos(e));
-            });
-        } : function(e) {
-            joince.joystick.destroy();
-            window.removeEventListener(mouse ? 'mousemove' : 'touchmove', moveListener);
-        };
-    };
-    window.addEventListener('mousedown', mouseListen(true, true));
-    window.addEventListener('touchstart', mouseListen(true, false));
-    window.addEventListener('mouseup', mouseListen(false, true));
-    window.addEventListener('touchend', mouseListen(false, false));
+    joince.arrowkeys.addListeners();
+    joince.joystick.addListeners();
 
     setInterval(function() {
         joince.ctx.clearRect(0, 0, joince.w, joince.h);
 
-        joince.player.r += (joince.move.left ? -0.2 : 0) + (joince.move.right ? 0.2 : 0);
-        var mult = joince.move.up ? 1 : joince.move.down ? -1 : 0;
-        joince.player.x += Math.cos(joince.player.r) * joince.consts.SPEED * mult;
-        joince.player.y += Math.sin(joince.player.r) * joince.consts.SPEED * mult;
-
+        joince.arrowkeys.update();
         joince.joystick.update();
 
         for (var i = 0; i < joince.blocks.length; ++i) {
