@@ -10,7 +10,7 @@ function getClickPos(e) {
 var joince = {
     cnv: null, ctx: null,
     w: window.innerWidth, h: window.innerHeight,
-    player: { x: 0, y: 0, w: scale(25), h: scale(25), color: 'red' },
+    player: { x: 0, y: 0, w: scale(25), h: scale(25), r: 0, color: 'red' },
     move: { left: false, up: false, right: false, down: false },
     blocks: [],
     consts: { SPEED: scale(4), joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } },
@@ -57,19 +57,12 @@ var joince = {
                     var dx = joince.joystick.pos.x - joince.joystick.nub.x,
                         dy = joince.joystick.pos.y - joince.joystick.nub.y;
 
+                    if (Math.sqrt(dx*dx + dy*dy) > joince.consts.joystick.OUTER_RADIUS / 2) {
+                        var angle = Math.atan2(-dy, -dx);
 
-                    if (Math.abs(dx) >= joince.consts.joystick.OUTER_RADIUS / 2) {
-                        joince.move.left = dx > 0;
-                        joince.move.right = dx < 0;
-                    } else {
-                        joince.move.left = joince.move.right = false;
-                    }
-
-                    if (Math.abs(dy) >= joince.consts.joystick.OUTER_RADIUS / 2) {
-                        joince.move.up = dy > 0;
-                        joince.move.down = dy < 0;
-                    } else {
-                        joince.move.up = joince.move.down = false;
+                        joince.player.r = angle;
+                        joince.player.x += Math.cos(joince.player.r) * joince.consts.SPEED;
+                        joince.player.y += Math.sin(joince.player.r) * joince.consts.SPEED;
                     }
                 }
             }
@@ -88,7 +81,10 @@ window.addEventListener('load', function() {
 
     for (var i = 0; i < 10; ++i) {
         var r = function(x) { return Math.random() * x | 0; };
-        var b = { w: r(scale(50)+5), h: r(scale(50)+5), color: 'rgb(' + [r(255),r(255),r(255)] + ')' };
+        var b = {
+            w: r(scale(50)+5), h: r(scale(50)+5), r: 0,
+            color: 'rgb(' + [r(255),r(255),r(255)] + ')'
+        };
         b.x = r(joince.w - b.w); b.y = r(joince.h - b.h);
         joince.blocks.push(b);
     }
@@ -129,10 +125,10 @@ window.addEventListener('load', function() {
     setInterval(function() {
         joince.ctx.clearRect(0, 0, joince.w, joince.h);
 
-        joince.player.x += (joince.move.left ? -joince.consts.SPEED : 0) +
-                           (joince.move.right ? joince.consts.SPEED : 0);
-        joince.player.y += (joince.move.up ? -joince.consts.SPEED : 0) +
-                           (joince.move.down ? joince.consts.SPEED : 0);
+        joince.player.r += (joince.move.left ? -0.2 : 0) + (joince.move.right ? 0.2 : 0);
+        var mult = joince.move.up ? 1 : joince.move.down ? -1 : 0;
+        joince.player.x += Math.cos(joince.player.r) * joince.consts.SPEED * mult;
+        joince.player.y += Math.sin(joince.player.r) * joince.consts.SPEED * mult;
 
         joince.joystick.update();
 
@@ -158,6 +154,12 @@ function collide(a, b) {
 
 function draw(x) {
     joince.ctx.fillStyle = x.color;
-    joince.ctx.fillRect(x.x, x.y, x.w, x.h);
+
+    joince.ctx.translate(x.x + x.w/2, x.y + x.h/2);
+    joince.ctx.rotate(x.r);
+    joince.ctx.fillRect(-x.w/2, -x.h/2, x.w, x.h);
+    joince.ctx.rotate(-x.r);
+    joince.ctx.translate(-x.x - x.w/2, -x.y - x.h/2);
+
     return x;
 }
