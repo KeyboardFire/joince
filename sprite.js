@@ -43,11 +43,14 @@ joince.sprite = {
         if (checkRect(ap)) return false;
         if (checkRect(bp)) return false;
         return true;
-    }, keepInBounds: function(x) {
-        if (x.x < 0) x.x = 0;
-        if (x.y < 0) x.y = 0;
-        if (x.x + x.w > joince.w) x.x = joince.w - x.w;
-        if (x.y + x.h > joince.h) x.y = joince.h - x.h;
+    }, keepInBounds: function(x, bounce) {
+        var mx = false, my = false;
+        if (x.x < 0) x.x = 0, mx = true;
+        if (x.y < 0) x.y = 0, my = true;
+        if (x.x + x.w > joince.w) x.x = joince.w - x.w, mx = true;
+        if (x.y + x.h > joince.h) x.y = joince.h - x.h, my = true;
+        if (bounce && mx) x.dx = -x.dx;
+        if (bounce && my) x.dy = -x.dy;
     }, draw: function(x) {
         joince.ctx.fillStyle = x.color;
 
