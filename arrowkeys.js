@@ -2,13 +2,15 @@ joince.arrowkeys = {
     pressed: { left: false, up: false, right: false, down: false },
     update: function(e, pressed) {
         if (e) {
-            e.preventDefault();
+            var prev = true;
             switch (e.keyCode) {
             case 37: joince.arrowkeys.pressed.left = pressed; break;
             case 38: joince.arrowkeys.pressed.up = pressed; break;
             case 39: joince.arrowkeys.pressed.right = pressed; break;
             case 40: joince.arrowkeys.pressed.down = pressed; break;
+            default: prev = false;
             }
+            if (prev) e.preventDefault();
         } else {
             joince.player.r += (joince.arrowkeys.pressed.left ? -0.2 : 0) +
                                (joince.arrowkeys.pressed.right ? 0.2 : 0);

@@ -1,10 +1,6 @@
-// TODO put these some place better
+// TODO put this some place better
 function scale(x) {
     return ((window.innerWidth + window.innerHeight) / 2) * (x / 1000);
-}
-function getClickPos(e) {
-    e = e.touches ? e.touches[0] : e;
-    return { x: e.clientX, y: e.clientY };
 }
 
 var joince = {
@@ -24,10 +20,10 @@ window.addEventListener('load', function() {
     joince.cnv.style.left = '0px';
     joince.ctx = joince.cnv.getContext('2d');
 
+    var r = function(x) { return Math.random() * x | 0; };
     for (var i = 0; i < 10; ++i) {
-        var r = function(x) { return Math.random() * x | 0; };
         var b = {
-            w: r(scale(50)+5), h: r(scale(50)+5), r: 0,
+            w: r(scale(50))+scale(25), h: r(scale(50))+scale(50), r: Math.random() * Math.PI,
             color: 'rgb(' + [r(255),r(255),r(255)] + ')'
         };
         b.x = r(joince.w - b.w); b.y = r(joince.h - b.h);
@@ -45,7 +41,7 @@ window.addEventListener('load', function() {
 
         for (var i = 0; i < joince.blocks.length; ++i) {
             var b = joince.sprite.draw(joince.blocks[i]);
-            if (joince.sprite.collide(joince.player, b)) {
+            if (joince.sprite.collideRot(joince.player, b)) {
                 joince.player.w = 0;
             }
         }

@@ -1,3 +1,9 @@
+// TODO put this some place better
+function getClickPos(e) {
+    e = e.touches ? e.touches[0] : e;
+    return { x: e.clientX, y: e.clientY };
+}
+
 joince.joystick = {
     create: function(e) {
         e.preventDefault();
