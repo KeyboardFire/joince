@@ -8,7 +8,7 @@ var joince = {
     w: window.innerWidth, h: window.innerHeight,
     player: { x: 0, y: 0, w: scale(25), h: scale(25), r: 0, color: 'red' },
     blocks: [],
-    consts: { SPEED: scale(4), joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } }
+    consts: { SPEED: scale(4), FRICTION: 0.99, joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } }
 };
 
 window.addEventListener('load', function() {
@@ -43,14 +43,17 @@ window.addEventListener('load', function() {
         joince.joystick.update();
 
         for (var i = 0; i < joince.blocks.length; ++i) {
-            var b = joince.sprite.draw(joince.blocks[i]);
+            var b = joince.blocks[i];
+
             if (joince.sprite.collideRot(joince.player, b)) {
                 joince.player.w = 0;
             }
+
             b.x += b.dx; b.y += b.dy; b.r += b.dr;
-            if (Math.random() < 0.005) {
-                b.dt = 40;
-            }
+            joince.sprite.keepInBounds(b, true);
+            joince.sprite.draw(b);
+
+            if (Math.random() < 0.005) b.dt = 40;
             if (b.dt) {
                 if (--b.dt) {
                     var b2 = {};
@@ -63,8 +66,10 @@ window.addEventListener('load', function() {
                     b.dr = Math.random() * (Math.PI / 4) - Math.PI / 8;
                 }
             }
-            b.dx *= 0.99; b.dy *= 0.99; b.dr *= 0.99;
-            joince.sprite.keepInBounds(b, true);
+
+            b.dx *= joince.consts.FRICTION;
+            b.dy *= joince.consts.FRICTION;
+            b.dr *= joince.consts.FRICTION;
         }
 
         joince.sprite.keepInBounds(joince.player);
