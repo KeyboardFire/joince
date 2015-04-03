@@ -57,7 +57,7 @@ joince.joystick = {
                 }
             }
         }
-    }, addListeners: function() {
+    }, init: function() {
         var moveListener;
         var mouseListen = function(pressed, mouse) {
             return pressed ? function(e) {

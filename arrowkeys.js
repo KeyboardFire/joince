@@ -18,7 +18,7 @@ joince.arrowkeys = {
             joince.player.x += Math.cos(joince.player.r) * joince.consts.SPEED * mult;
             joince.player.y += Math.sin(joince.player.r) * joince.consts.SPEED * mult;
         }
-    }, addListeners: function() {
+    }, init: function() {
         var keyListen = function(pressed) {
             return function(e) { joince.arrowkeys.update(e, pressed); };
         };
