@@ -1,5 +1,6 @@
 joince.block = {
     blocks: [],
+    FRICTION: 0.99,
     init: function() {
         var r = function(x) { return Math.random() * x | 0; };
         for (var i = 0; i < 1; ++i) {
@@ -52,9 +53,9 @@ joince.block = {
                 }
             }
 
-            b.dx *= joince.consts.FRICTION;
-            b.dy *= joince.consts.FRICTION;
-            b.dr *= joince.consts.FRICTION;
+            b.dx *= joince.block.FRICTION;
+            b.dy *= joince.block.FRICTION;
+            b.dr *= joince.block.FRICTION;
         }
     }
 };

@@ -4,17 +4,15 @@ function scale(x) {
 }
 function clone(x, merge) {
     var y = {};
-    for (z in x) y[z] = x[z];
-    if (merge) for (z in merge) y[z] = merge[z];
+    for (var z in x) y[z] = x[z];
+    if (merge) for (var z in merge) y[z] = merge[z];
     return y;
 }
 
 var joince = {
     cnv: null, ctx: null,
     w: window.innerWidth, h: window.innerHeight,
-    player: { x: 0, y: 0, w: scale(25), h: scale(25), r: 0, color: 'red' },
-    blocks: [],
-    consts: { SPEED: scale(4), FRICTION: 0.99, joystick: { NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36) } }
+    player: { x: 0, y: 0, w: scale(25), h: scale(25), r: 0, color: 'red', SPEED: scale(4) }
 };
 
 window.addEventListener('load', function() {
