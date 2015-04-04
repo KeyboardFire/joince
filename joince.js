@@ -1,11 +1,4 @@
-var joince = {
-    cnv: null, ctx: null,
-    w: window.innerWidth, h: window.innerHeight,
-    player: {
-        x: 0, y: 0, w: util.scale(25), h: util.scale(25), r: 0, color: 'red',
-        dx: 0, dy: 0, dr: 0, friction: 0.8, SPEED: util.scale(3)
-    }
-};
+var joince = { cnv: null, ctx: null, w: window.innerWidth, h: window.innerHeight };
 
 window.addEventListener('load', function() {
     joince.cnv = document.getElementById('cnv');
@@ -19,6 +12,7 @@ window.addEventListener('load', function() {
     joince.arrowkeys.init();
     joince.joystick.init();
     joince.block.init();
+    joince.player.init();
 
     setInterval(function() {
         joince.ctx.clearRect(0, 0, joince.w, joince.h);
@@ -26,7 +20,6 @@ window.addEventListener('load', function() {
         joince.arrowkeys.update();
         joince.joystick.update();
         joince.block.update();
-
-        joince.sprite.update(joince.player, true);
+        joince.player.update();
     }, 20);
 });
