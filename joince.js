@@ -1,18 +1,10 @@
-// TODO put this some place better
-function scale(x) {
-    return ((window.innerWidth + window.innerHeight) / 2) * (x / 1000);
-}
-function clone(x, merge) {
-    var y = {};
-    for (var z in x) y[z] = x[z];
-    if (merge) for (var z in merge) y[z] = merge[z];
-    return y;
-}
-
 var joince = {
     cnv: null, ctx: null,
     w: window.innerWidth, h: window.innerHeight,
-    player: { x: 0, y: 0, w: scale(25), h: scale(25), r: 0, color: 'red', SPEED: scale(4) }
+    player: {
+        x: 0, y: 0, w: util.scale(25), h: util.scale(25), r: 0, color: 'red',
+        SPEED: util.scale(4)
+    }
 };
 
 window.addEventListener('load', function() {

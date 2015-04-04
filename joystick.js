@@ -5,7 +5,7 @@ function getClickPos(e) {
 }
 
 joince.joystick = {
-    NUB_RADIUS: scale(12), OUTER_RADIUS: scale(36),
+    NUB_RADIUS: util.scale(12), OUTER_RADIUS: util.scale(36),
     create: function(e) {
         e.preventDefault();
         joince.joystick.nub = joince.joystick.pos = getClickPos(e);

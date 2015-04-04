@@ -5,8 +5,8 @@ joince.block = {
         var r = function(x) { return Math.random() * x | 0; };
         for (var i = 0; i < 1; ++i) {
             var b = {
-                w: r(scale(50))+scale(100),
-                h: r(scale(50))+scale(100),
+                w: r(util.scale(50))+util.scale(100),
+                h: r(util.scale(50))+util.scale(100),
                 r: Math.random() * Math.PI,
                 color: 'rgb(' + [r(255),r(255),r(255)] + ')',
                 dx: 0, dy: 0, dr: 0, dt: 0
@@ -44,7 +44,7 @@ joince.block = {
             if (Math.random() < 0.0005) {
                 joince.block.blocks.splice(i--, 1);
                 for (var i = 0; i < 4; ++i) {
-                    joince.block.blocks.push(clone(b, {
+                    joince.block.blocks.push(util.clone(b, {
                         x: b.x + Math.random() * b.w - b.w/2,
                         y: b.y + Math.random() * b.h - b.h/2,
                         w: b.w / 2, h: b.h / 2,
