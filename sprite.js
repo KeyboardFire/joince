@@ -43,14 +43,25 @@ joince.sprite = {
         if (checkRect(ap)) return false;
         if (checkRect(bp)) return false;
         return true;
-    }, keepInBounds: function(x, bounce) {
+    }, keepInBounds: function(x) {
         var mx = false, my = false;
         if (x.x < 0) x.x = 0, mx = true;
         if (x.y < 0) x.y = 0, my = true;
         if (x.x + x.w > joince.w) x.x = joince.w - x.w, mx = true;
         if (x.y + x.h > joince.h) x.y = joince.h - x.h, my = true;
-        if (bounce && mx) x.dx = -x.dx;
-        if (bounce && my) x.dy = -x.dy;
+        if (mx) x.dx = -x.dx;
+        if (my) x.dy = -x.dy;
+    }, update: function(x, doEverything) {
+        x.x += x.dx || 0;
+        x.y += x.dy || 0;
+        x.r += x.dr || 0;
+        x.dx *= x.friction || 1;
+        x.dy *= x.friction || 1;
+        x.dr *= x.friction || 1;
+        if (doEverything) {
+            joince.sprite.keepInBounds(x);
+            joince.sprite.draw(x);
+        }
     }, draw: function(x) {
         joince.ctx.fillStyle = x.color;
 
@@ -59,7 +70,5 @@ joince.sprite = {
         joince.ctx.fillRect(-x.w/2, -x.h/2, x.w, x.h);
         joince.ctx.rotate(-x.r);
         joince.ctx.translate(-x.x - x.w/2, -x.y - x.h/2);
-
-        return x;
     }
 };

@@ -15,8 +15,8 @@ joince.arrowkeys = {
             joince.player.r += (joince.arrowkeys.pressed.left ? -0.2 : 0) +
                                (joince.arrowkeys.pressed.right ? 0.2 : 0);
             var mult = joince.arrowkeys.pressed.up ? 1 : joince.arrowkeys.pressed.down ? -1 : 0;
-            joince.player.x += Math.cos(joince.player.r) * joince.player.SPEED * mult;
-            joince.player.y += Math.sin(joince.player.r) * joince.player.SPEED * mult;
+            joince.player.dx += Math.cos(joince.player.r) * joince.player.SPEED * mult;
+            joince.player.dy += Math.sin(joince.player.r) * joince.player.SPEED * mult;
         }
     }, init: function() {
         var keyListen = function(pressed) {

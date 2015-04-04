@@ -3,7 +3,7 @@ var joince = {
     w: window.innerWidth, h: window.innerHeight,
     player: {
         x: 0, y: 0, w: util.scale(25), h: util.scale(25), r: 0, color: 'red',
-        SPEED: util.scale(4)
+        dx: 0, dy: 0, dr: 0, friction: 0.8, SPEED: util.scale(3)
     }
 };
 
@@ -27,7 +27,6 @@ window.addEventListener('load', function() {
         joince.joystick.update();
         joince.block.update();
 
-        joince.sprite.keepInBounds(joince.player);
-        joince.sprite.draw(joince.player);
+        joince.sprite.update(joince.player, true);
     }, 20);
 });

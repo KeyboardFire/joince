@@ -9,7 +9,8 @@ joince.block = {
                 h: r(util.scale(50))+util.scale(100),
                 r: Math.random() * Math.PI,
                 color: 'rgb(' + [r(255),r(255),r(255)] + ')',
-                dx: 0, dy: 0, dr: 0, dt: 0
+                dx: 0, dy: 0, dr: 0, dt: 0,
+                friction: joince.block.FRICTION
             };
             b.x = r(joince.w - b.w); b.y = r(joince.h - b.h);
             joince.block.blocks.push(b);
@@ -22,9 +23,7 @@ joince.block = {
                 joince.player.w = 0;
             }
 
-            b.x += b.dx; b.y += b.dy; b.r += b.dr;
-            joince.sprite.keepInBounds(b, true);
-            joince.sprite.draw(b);
+            joince.sprite.update(b, true);
 
             if (Math.random() < 0.005) b.dt = 40;
             if (b.dt) {
@@ -52,10 +51,6 @@ joince.block = {
                     }));
                 }
             }
-
-            b.dx *= joince.block.FRICTION;
-            b.dy *= joince.block.FRICTION;
-            b.dr *= joince.block.FRICTION;
         }
     }
 };

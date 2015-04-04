@@ -53,8 +53,8 @@ joince.joystick = {
                     var angle = Math.atan2(-dy, -dx);
 
                     joince.player.r = angle;
-                    joince.player.x += Math.cos(joince.player.r) * joince.player.SPEED;
-                    joince.player.y += Math.sin(joince.player.r) * joince.player.SPEED;
+                    joince.player.dx += Math.cos(joince.player.r) * joince.player.SPEED;
+                    joince.player.dy += Math.sin(joince.player.r) * joince.player.SPEED;
                 }
             }
         }
